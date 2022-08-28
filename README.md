@@ -1,3 +1,4 @@
+ссылка на гугл документ https://docs.google.com/document/d/1kgZ3jqPA5v0lECwvtSq57HDSHrHpnAlkdE7dKap7Buw/edit
 <p class="has-line-data" data-line-start="0" data-line-end="3">Техническое задание на разработку парсера.<br>
 Ссылка на источник: <a href="https://zootovary.ru">https://zootovary.ru</a><br>
 Цель - получение информации о товарах: цены, артикулы, штрихкоды, параметры; Получение списка доступных категорий товаров.</p>
