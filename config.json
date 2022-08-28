@@ -1,0 +1,12 @@
+{"config": {
+  "output_directory": "result",
+  "categories": [],
+  "delay_range_s": [],
+  "max_retries": 2,
+  "headers": {},
+  "logs_dir": "logs",
+  "restart": {
+  "restart_count": 3,
+  "interval_m": 0.2
+  }
+}}
