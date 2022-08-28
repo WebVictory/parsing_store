@@ -38,7 +38,26 @@ class Parser:
         self.__restart_count = config["config"]["restart"]["restart_count"]
         self.__interval_m = config["config"]["restart"]["interval_m"]
 
+    def __restart_parsing(func):
+        def magic(self):
+            if self.__restart_count:
+                for retrie in range(self.__restart_count):
+                    try:
+                        # задеркжа перед слеюдующей  вызовом слеюдующей функции
+                        sleep(self.__interval_m)
+                        func(self)
+                        return 0
+                    except:
+                        self.__delay()
+                        info = f"Ошибка получения попытка номер {retrie+1}"
+                        print(info)
+                        logging.error(info)
+            else:
+                func(self)
+        return magic
+
     # получаем все категории с сайта
+    @__restart_parsing
     def get_categories(self):
         # получаем сначала разделы с главного сайта
         main_categories = self.__get_main_categories()
@@ -51,19 +70,23 @@ class Parser:
         logging.info(info)
         print(info)
         self.__record_csv(categories, header, file_name)
-        return "Информация сохранена в файл"
-
-    # получаем все продукты с сайта
-    def get_products(self):
-        all_links = self.__cheked_categories()
-        all_products = self.__get_products_from_link(all_links)
-        info = "Приступаю к записи файла"
-        logging.info(info)
-        print(info)
-        self.__record_csv(all_products, self.__product_header, self.__products_file_name)
         info = "Файл успешно сохранен"
         logging.info(info)
         print(info)
+
+
+    # получаем все продукты с сайта
+    @__restart_parsing
+    def get_products(self):
+            all_links = self.__cheked_categories()
+            all_products = self.__get_products_from_link(all_links)
+            info = "Приступаю к записи файла"
+            logging.info(info)
+            print(info)
+            self.__record_csv(all_products, self.__product_header, self.__products_file_name)
+            info = "Файл успешно сохранен"
+            logging.info(info)
+            print(info)
 
     def __cheked_categories(self):
         all_links = []
@@ -127,12 +150,6 @@ class Parser:
             delay_max = self.__delay_range_s[1]
             sleep(randint(delay_min, delay_max))
 
-    # # проверка на совпадение артикула и штрихкода
-    # def __limit_categories(self, category_item):
-    #     # категория не проходит если  она есть списке категорий либо этот список пуст
-    #     if category_item["id"] in self.__url_core + "/" + self.__categories or not self.__categories:
-    #         return category_item
-
     def __get_main_categories(self):
         main_categories = []
         # получаем каталог
@@ -187,23 +204,10 @@ class Parser:
                     return func
                 except:
                     self.__delay()
-            else:
-                logging.error("Ошибка получения товара")
         else:
             return func
 
-    def __restart_parsing(self, func):
-        if self.__restart_count:
-            for retrie in range(self.__restart_count):
-                try:
-                    return func
-                except:
-                    # задеркжа перед слеюдующей  вызовом слеюдующей функции
-                    sleep(self.__interval_m)
-            else:
-                logging.error("Ошибка получения товара")
-        else:
-            return func
+
 
     # метод записи в файл
     def __record_csv(self, data, header, file_name):
